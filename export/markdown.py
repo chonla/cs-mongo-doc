@@ -1,5 +1,6 @@
 from pprint import pprint
 import re
+import html
 
 
 class markdown():
@@ -38,7 +39,7 @@ class markdown():
 
         for k in classes[object_name]:
             t, d = classes[object_name][k][0], classes[object_name][k][1]
-            bare_type = self.remove_namespace(t)
+            bare_type = html.escape(self.remove_namespace(t))
 
             if t in classes:
                 link = bare_type.lower()

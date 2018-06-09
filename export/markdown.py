@@ -1,6 +1,5 @@
 from pprint import pprint
 import re
-import html
 
 
 class markdown():
@@ -17,6 +16,7 @@ class markdown():
 
         while len(self.to_be_printed) > 0:
             o = self.to_be_printed.pop(0)
+            print(f"> {o}")
             buffer.extend(self.print_object(o, classes))
 
         with open(f"{name}.md", "w") as f:
@@ -39,23 +39,39 @@ class markdown():
 
         for k in classes[object_name]:
             t, d = classes[object_name][k][0], classes[object_name][k][1]
-            bare_type = html.escape(self.remove_namespace(t))
-
-            if t in classes:
-                link = bare_type.lower()
-                bare_type = f"[{bare_type}](#{link})"
-
-            buffer.append(f"| {k} | {bare_type} | {d} |")
-
+            bare_type = self.remove_namespace(t)
+            encoded_type = ""
             actual_type = t
-            type_match = re.search("List<([^>]+)>", t)
+            type_match = re.search("([^<\\.]+)<([^>]+)>", t)
             if type_match:
-                actual_type = type_match.group(1)
+                generic = type_match.group(1)
+                bare_type = type_match.group(2)
+                actual_type = self.get_namespace(
+                    t) + "." + bare_type
+                if actual_type in classes:
+                    link = bare_type.lower()
+                    encoded_type = f"{generic}&lt;[{bare_type}](#{link})&gt;"
+                else:
+                    encoded_type = f"{generic}&lt;{bare_type}&gt;"
+            else:
+                if t in classes:
+                    link = bare_type.lower()
+                    encoded_type = f"[{bare_type}](#{link})"
+                else:
+                    encoded_type = bare_type
+
+            buffer.append(f"| {k} | {encoded_type} | {d} |")
+
+            print(f"found new type: {actual_type}")
 
             if actual_type in classes and actual_type not in self.to_be_printed:
+                print(f"put in queue")
                 self.to_be_printed.append(actual_type)
 
         return buffer
 
     def remove_namespace(self, name):
         return name.split(".")[-1]
+
+    def get_namespace(self, name):
+        return ".".join(name.split(".")[0:-1])

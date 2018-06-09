@@ -46,6 +46,8 @@ class code():
         with open(name) as f:
             content = f.read()
 
+        print(f"Scan file: {name}")
+
         content = content.replace("\r\n", "\n")
 
         match = re.search("public\\s+class\\s+([A-Za-z][A-Za-z0-9]*)", content)
@@ -58,14 +60,16 @@ class code():
             if ns_match:
                 namespace = ns_match.group(1)
 
-            constructor_match = re.search(f"public {class_name}\\s*\\(", content)
-            if constructor_match:
-                return
+            # constructor_match = re.search(f"public {class_name}\\s*\\(", content)
+            # if constructor_match:
+            #     print("constructor found -> skipped")
+            #     return
 
-            method_match = re.search(
-                "\\s+[A-Za-z][A-Za-z0-9]*\\s*\\([^\\)]*\\)", content)
-            if method_match:
-                return
+            # method_match = re.search(
+            #     "\\s+[A-Za-z][A-Za-z0-9]*\\s*\\([^\\)]*\\)", content)
+            # if method_match:
+            #     print("method found -> skipped")
+            #     return
 
             lines = content.split("\n")
             summary_on = False
@@ -73,6 +77,7 @@ class code():
             var_list = {}
             is_mongo_object = False
             for line in lines:
+                print(line)
                 if re.search("^\\s*/// <summary>\\s*", line):
                     summary = ""
                     summary_on = True
@@ -97,6 +102,7 @@ class code():
                         if is_mongo_object:
                             self.mongo_object.append(
                                 namespace + "." + class_name)
+                            print(f"Found object: {namespace}.{class_name}")
                         is_mongo_object = False
 
             self.model_list[namespace + "." + class_name] = var_list

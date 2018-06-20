@@ -11,7 +11,6 @@ class code():
         self.model_list = {}
         self.mongo_object = []
         self.get_scan_list()
-        # self.file_list.append(self.scan_path + "/Models/Form.cs")
 
         for f in self.file_list:
             self.scan(f)
@@ -60,24 +59,12 @@ class code():
             if ns_match:
                 namespace = ns_match.group(1)
 
-            # constructor_match = re.search(f"public {class_name}\\s*\\(", content)
-            # if constructor_match:
-            #     print("constructor found -> skipped")
-            #     return
-
-            # method_match = re.search(
-            #     "\\s+[A-Za-z][A-Za-z0-9]*\\s*\\([^\\)]*\\)", content)
-            # if method_match:
-            #     print("method found -> skipped")
-            #     return
-
             lines = content.split("\n")
             summary_on = False
             summary = ""
             var_list = {}
             is_mongo_object = False
             for line in lines:
-                print(line)
                 if re.search("^\\s*/// <summary>\\s*", line):
                     summary = ""
                     summary_on = True

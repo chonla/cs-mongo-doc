@@ -5,8 +5,8 @@ from export.exporter import exporter
 
 
 class markdown(exporter):
-    def __init__(self, name):
-        super().__init__(name, "md")
+    def __init__(self, name, output):
+        super().__init__(name, "md", output)
         pass
 
     def print_doc_title(self, name):

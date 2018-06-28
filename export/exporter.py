@@ -5,11 +5,12 @@ import os.path
 
 
 class exporter():
-    def __init__(self, name, extension):
+    def __init__(self, name, extension, output):
         self.to_be_printed = []
         self.filename = f"{name}.{extension}"
         self.name = name
         self.template = "{content}"
+        self.output = output
 
         template_file = f"./assets/template.{extension}"
         if os.path.isfile(template_file):
@@ -31,7 +32,7 @@ class exporter():
 
         buffer.extend(self.print_timestamp())
 
-        with open(self.filename, "w") as f:
+        with open(f"{self.output}/{self.filename}", "w") as f:
             content = self.template.format(
                 title=self.name, content="\n".join(buffer))
             f.write(content)

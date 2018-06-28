@@ -5,8 +5,8 @@ from export.exporter import exporter
 
 
 class html(exporter):
-    def __init__(self, name):
-        super().__init__(name, "html")
+    def __init__(self, name, output):
+        super().__init__(name, "html", output)
         pass
 
     def print_doc_title(self, name):

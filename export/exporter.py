@@ -1,13 +1,20 @@
 from pprint import pprint
 import re
 from datetime import datetime
+import os.path
 
 
 class exporter():
-    def __init__(self, name, filename):
+    def __init__(self, name, extension):
         self.to_be_printed = []
-        self.filename = filename
+        self.filename = f"{name}.{extension}"
         self.name = name
+        self.template = "{content}"
+
+        template_file = f"./assets/template.{extension}"
+        if os.path.isfile(template_file):
+            with open(template_file, 'r') as tmpl:
+                self.template = tmpl.read()
         pass
 
     def create(self, classes, objects):
@@ -25,7 +32,9 @@ class exporter():
         buffer.extend(self.print_timestamp())
 
         with open(self.filename, "w") as f:
-            f.write("\n".join(buffer))
+            content = self.template.format(
+                title=self.name, content="\n".join(buffer))
+            f.write(content)
 
     def print_doc_title(self, name):
         return ["return document title here"]

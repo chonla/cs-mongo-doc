@@ -2,4 +2,5 @@
 *.html
 *.pyc
 !README.md
+!assets/*.*
 __pycache__/

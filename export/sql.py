@@ -35,7 +35,7 @@ class sql(exporter):
                 [object_name, data[0], custom_match.group(1)])
             return []
         if data_type == "string":
-            data_type = "VARCHAR(2000)"
+            data_type = "VARCHAR(500)"
         elif data_type == "int":
             data_type = "INTEGER"
         elif data_type == "bool":
@@ -50,7 +50,7 @@ class sql(exporter):
         rels = self.get_relations()
         end_table = ["    PRIMARY KEY (pk_id)",
                      ")", "ENGINE=InnoDB",
-                     "DEFAULTT CHARSET=utf8", "COLLATE=utf8_general_ci;"]
+                     "DEFAULT CHARSET=utf8", "COLLATE=utf8_general_ci;"]
         end_table.extend(rels)
         return end_table
 
@@ -75,7 +75,8 @@ class sql(exporter):
                    f"    {to}_id INTEGER UNSIGNED",
                    ")",
                    "ENGINE=InnoDB",
-                   "DEFAULTT CHARSET=utf8",
+                   "DEFAULT CHARSET=utf8",
                    "COLLATE=utf8_general_ci;"]
             rels.extend(tab)
+        self.relations = []
         return rels

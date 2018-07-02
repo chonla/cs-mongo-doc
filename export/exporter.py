@@ -12,6 +12,7 @@ class exporter():
         self.template = "{content}"
         self.output = output
         self.classes = []
+        self.printed = []
 
         template_file = f"./assets/template.{extension}"
         if os.path.isfile(template_file):
@@ -25,6 +26,7 @@ class exporter():
     def create(self, classes, objects):
         buffer = []
         self.classes = classes
+        self.printed = []
 
         buffer.extend(self.print_doc_title(self.name))
 
@@ -32,8 +34,10 @@ class exporter():
 
         while len(self.to_be_printed) > 0:
             o = self.to_be_printed.pop(0)
-            print(f"> {o}")
-            buffer.extend(self.print_object(o, classes))
+            if o not in self.printed:
+                print(f"> {o}")
+                buffer.extend(self.print_object(o, classes))
+                self.printed.append(o)
 
         buffer.extend(self.print_timestamp())
 

@@ -7,6 +7,7 @@ from export.exporter import exporter
 class sql(exporter):
     def __init__(self, name, output):
         self.relations = []
+        self.tables = []
         super().__init__(name, "sql", output)
         pass
 
@@ -18,8 +19,8 @@ class sql(exporter):
         return [f"--- auto-generated on {ts}"]
 
     def print_table_title(self, title):
-        return ["", f"CREATE TABLE {title}", "(",
-                "    pk_id INTEGER UNSIGNED,"]
+        return ["", f"CREATE TABLE `{title}`", "(",
+                "    `pk_id` INTEGER UNSIGNED,"]
 
     def print_table_header_columns(self, header_columns):
         return []
@@ -29,11 +30,20 @@ class sql(exporter):
 
     def print_row(self, data, object_name=""):
         data_type = data[1]
+
         custom_match = re.search("LinkTo:([^\\s+]+)", data_type)
         if custom_match:
             self.add_relationship(
                 [object_name, data[0], custom_match.group(1)])
             return []
+
+        custom_match = re.search("List&lt;(.+)&gt;", data_type)
+        if custom_match:
+            self.add_relationship(
+                [object_name, data[0]])
+            self.add_simple_table([data[0]])
+            return []
+
         if data_type == "string":
             data_type = "VARCHAR(500)"
         elif data_type == "int":
@@ -42,16 +52,20 @@ class sql(exporter):
             data_type = "TINYINT"
         elif data_type == "DateTime":
             data_type = "DATETIME"
+        elif data_type == "decimal" or data_type == "double":
+            data_type = "DOUBLE"
         data_field_name = self.normalize_field_name(data[0])
-        row = f"    {data_field_name} {data_type},"
+        row = f"    `{data_field_name}` {data_type},"
         return [row]
 
     def print_end_table(self, header_columns):
-        rels = self.get_relations()
-        end_table = ["    PRIMARY KEY (pk_id)",
+        end_table = ["    PRIMARY KEY (`pk_id`)",
                      ")", "ENGINE=InnoDB",
                      "DEFAULT CHARSET=utf8", "COLLATE=utf8_general_ci;"]
+        rels = self.get_relations()
         end_table.extend(rels)
+        tables = self.get_tables()
+        end_table.extend(tables)
         return end_table
 
     def normalize_field_name(self, name):
@@ -63,6 +77,24 @@ class sql(exporter):
     def add_relationship(self, tuple):
         self.relations.append(tuple)
 
+    def add_simple_table(self, tuple):
+        self.tables.append(tuple)
+
+    def get_tables(self):
+        tables = []
+        for table in self.tables:
+            name = "".join(map(lambda t: t.capitalize(), table))
+            tab = ["", f"CREATE TABLE `{name}`", "(",
+                   f"    `pk_id` INTEGER UNSIGNED,",
+                   "    PRIMARY KEY (`pk_id`)",
+                    ")",
+                   "ENGINE=InnoDB",
+                   "DEFAULT CHARSET=utf8",
+                   "COLLATE=utf8_general_ci;"]
+            tables.extend(tab)
+        self.tables = []
+        return tables
+
     def get_relations(self):
         rels = []
         for rel in self.relations:
@@ -70,9 +102,9 @@ class sql(exporter):
             name = "".join(map(lambda t: t.capitalize(), rel)) + "Relation"
             fr = self.normalize_field_name(rel[0]).lower()
             to = self.normalize_field_name(rel[1]).lower()
-            tab = ["", f"CREATE TABLE {name}", "(",
-                   f"    {fr}_id INTEGER UNSIGNED,",
-                   f"    {to}_id INTEGER UNSIGNED",
+            tab = ["", f"CREATE TABLE `{name}`", "(",
+                   f"    `{fr}_id` INTEGER UNSIGNED,",
+                   f"    `{to}_id` INTEGER UNSIGNED",
                    ")",
                    "ENGINE=InnoDB",
                    "DEFAULT CHARSET=utf8",

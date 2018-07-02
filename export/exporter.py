@@ -11,6 +11,7 @@ class exporter():
         self.name = name
         self.template = "{content}"
         self.output = output
+        self.classes = []
 
         template_file = f"./assets/template.{extension}"
         if os.path.isfile(template_file):
@@ -18,8 +19,12 @@ class exporter():
                 self.template = tmpl.read()
         pass
 
+    def all_classes(self):
+        return self.classes
+
     def create(self, classes, objects):
         buffer = []
+        self.classes = classes
 
         buffer.extend(self.print_doc_title(self.name))
 
@@ -52,11 +57,11 @@ class exporter():
     def print_link(self, text, href):
         return "this is link"
 
-    def print_row(self, data):
+    def print_row(self, data, original_type=""):
         return "content row"
 
     def print_end_table(self, header_columns):
-        return "end of table"
+        return ["end of table"]
 
     def print_object(self, object_name, classes):
         buffer = []
@@ -93,7 +98,7 @@ class exporter():
                 else:
                     encoded_type = bare_type
 
-            buffer.append(self.print_row([k, encoded_type, d]))
+            buffer.extend(self.print_row([k, encoded_type, d], self.name))
 
             print(f"found new type: {actual_type}")
 
@@ -101,7 +106,7 @@ class exporter():
                 print(f"put in queue")
                 self.to_be_printed.append(actual_type)
 
-        buffer.append(self.print_end_table(["", "", ""]))
+        buffer.extend(self.print_end_table(["", "", ""]))
 
         return buffer
 

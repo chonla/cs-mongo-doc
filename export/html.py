@@ -27,9 +27,9 @@ class html(exporter):
     def print_link(self, text, href):
         return f"<a href='#{href}'>{text}</a>"
 
-    def print_row(self, data):
+    def print_row(self, data, original_type=""):
         row = "<tr><td>" + ("</td><td>".join(data)) + "</td></tr>"
-        return row
+        return [row]
 
     def print_end_table(self, header_columns):
-        return "</tbody></table></p></div></div>"
+        return ["</tbody></table></p></div></div>"]

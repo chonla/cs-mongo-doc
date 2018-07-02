@@ -42,10 +42,10 @@ class code():
         return text
 
     def scan(self, name):
+        print(f"Scan file: {name}")
+
         with open(name) as f:
             content = f.read()
-
-        print(f"Scan file: {name}")
 
         content = content.replace("\r\n", "\n")
 

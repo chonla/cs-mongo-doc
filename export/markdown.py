@@ -27,9 +27,9 @@ class markdown(exporter):
     def print_link(self, text, href):
         return f"[{text}](#{href})"
 
-    def print_row(self, data):
+    def print_row(self, data, original_type=""):
         row = "| " + " | ".join(data) + " |"
-        return row
+        return [row]
 
     def print_end_table(self, header_columns):
-        return ""
+        return [""]

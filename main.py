@@ -1,6 +1,7 @@
 from finder.code import code
 from export.markdown import markdown
 from export.html import html
+from export.sql import sql
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -10,6 +11,8 @@ parser.add_argument('-o', '--output', help='output path', default='.')
 parser.add_argument('--md', help='export markdown',
                     action='store_true', default=False)
 parser.add_argument('--html', help='export html',
+                    action='store_true', default=False)
+parser.add_argument('--sql', help='export migration sql script',
                     action='store_true', default=False)
 
 args = parser.parse_args()
@@ -35,7 +38,12 @@ if args.html:
     h.create(s, o)
     print("html is exported")
 
-if not args.md and not args.html:
+if args.sql:
+    stmt = sql(doc_title, output)
+    stmt.create(s, o)
+    print("sql is exported")
+
+if not args.md and not args.html and not args.sql:
     print("nothing is exported.")
 
 print("done.")

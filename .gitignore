@@ -1,6 +1,7 @@
 *.md
 *.html
 *.pyc
+*.sql
 !README.md
 !assets/*.*
 __pycache__/

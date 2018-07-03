@@ -102,7 +102,7 @@ class exporter():
                 else:
                     encoded_type = bare_type
 
-            buffer.extend(self.print_row([k, encoded_type, d], self.name))
+            buffer.extend(self.print_row([k, encoded_type, d], title))
 
             print(f"found new type: {actual_type}")
 

@@ -12,11 +12,11 @@ class sql(exporter):
         pass
 
     def print_doc_title(self, name):
-        return [f"--- {name} migration script"]
+        return [f"-- {name} migration script"]
 
     def print_timestamp(self):
         ts = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
-        return [f"--- auto-generated on {ts}"]
+        return [f"-- auto-generated on {ts}"]
 
     def print_table_title(self, title):
         return ["", f"CREATE TABLE `{title}`", "(",
@@ -33,12 +33,16 @@ class sql(exporter):
 
         custom_match = re.search("LinkTo:([^\\s+]+)", data_type)
         if custom_match:
+            # pprint("LinkTo")
+            # pprint([object_name, data[0], custom_match.group(1)])
             self.add_relationship(
                 [object_name, data[0], custom_match.group(1)])
             return []
 
         custom_match = re.search("List&lt;(.+)&gt;", data_type)
         if custom_match:
+            # pprint("List")
+            # pprint([object_name, data[0]])
             self.add_relationship(
                 [object_name, data[0]])
             self.add_simple_table([data[0]])
@@ -99,9 +103,18 @@ class sql(exporter):
         rels = []
         for rel in self.relations:
             # "_".join(rel).upper()
-            name = "".join(map(lambda t: t.capitalize(), rel)) + "Relation"
-            fr = self.normalize_field_name(rel[0]).lower()
-            to = self.normalize_field_name(rel[1]).lower()
+            # name = "".join(map(lambda t: t.capitalize(), rel)) + "Relation"
+            name = ""
+            frm = ""
+            to = ""
+            if len(rel) == 3:
+                name = rel[0].capitalize() + rel[1].capitalize() + "Relation"
+                fr = self.normalize_field_name(rel[0]).lower()
+                to = self.normalize_field_name(rel[2]).lower()
+            else:
+                name = "".join(map(lambda t: t.capitalize(), rel)) + "Relation"
+                fr = self.normalize_field_name(rel[0]).lower()
+                to = self.normalize_field_name(rel[1]).lower()
             tab = ["", f"CREATE TABLE `{name}`", "(",
                    f"    `{fr}_id` INTEGER UNSIGNED,",
                    f"    `{to}_id` INTEGER UNSIGNED",

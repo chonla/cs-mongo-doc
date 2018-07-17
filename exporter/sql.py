@@ -1,6 +1,7 @@
 from exporter.base import base
 import re
 from pprint import pprint
+import hashlib
 
 
 class sql(base):
@@ -90,6 +91,10 @@ COLLATE=utf8_general_ci;'''
             self.dump_relation(relation)
 
         content = self.flush()
+
+        hash = hashlib.md5(content.encode('utf-8')).hexdigest()
+        content = content + f"\n-- hash:{hash}"
+
         self.save(content, f'{self.output}/{self.title}.sql')
 
     def get_main_data_type(self, var_type):

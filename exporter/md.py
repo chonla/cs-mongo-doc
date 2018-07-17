@@ -1,24 +1,12 @@
 from exporter.base import base
-from pprint import pprint
 import re
-from functools import reduce
 
 
 class md(base):
     def __init__(self, title, objects, output):
-        super().__init__()
-        self.title = title
-        self.objects = objects
+        super().__init__(objects)
         self.output = output
-        self.mongo_objects = list(
-            filter(lambda m: m['is_mongo_object'], self.objects))
-        self.class_keys = list(
-            map(lambda m: m['classname'], self.objects))
-        self.class_list = reduce(self.add, self.objects, {})
-
-    def add(self, object_map, object):
-        object_map[object['classname']] = object
-        return object_map
+        self.title = title
 
     def export(self):
         self.referenced = []
@@ -39,7 +27,6 @@ class md(base):
         referenced_classes = list(
             map(lambda c: self.class_list[c], self.referenced))
 
-        # for m in referenced_classes:
         while len(self.referenced) > 0:
             classname = self.referenced.pop(0)
             m = self.class_list[classname]
@@ -55,10 +42,6 @@ class md(base):
 
         content = self.flush()
         self.save(content, f'{self.output}/{self.title}.md')
-
-    def save(self, content, filename):
-        with open(filename, 'w') as f:
-            f.write(content)
 
     def render_link(self, var_type):
         match = re.search(

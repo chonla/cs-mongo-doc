@@ -36,6 +36,10 @@ if args.md:
     p.to_md(doc_title, output)
     print("markdown is exported")
 
+if args.html:
+    p.to_html(doc_title, output)
+    print("html is exported")
+
 # mongo_obj = filter(lambda o: o['is_mongo_object'], p.models())
 # for m in mongo_obj:
 #     pprint(m['classname'])

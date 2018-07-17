@@ -5,6 +5,7 @@ from csharp.model import model
 import operator
 from functools import reduce
 from exporter.md import md
+from exporter.html import html
 
 
 class parser():
@@ -26,4 +27,8 @@ class parser():
 
     def to_md(self, title, path):
         out = md(title, self.objects, path)
+        out.export()
+
+    def to_html(self, title, path):
+        out = html(title, self.objects, path)
         out.export()

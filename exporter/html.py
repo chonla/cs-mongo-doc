@@ -26,7 +26,7 @@ class html(base):
         self.push('</tr></thead><tbody>')
         for v in model['variables']:
             var_type = self.render_link(v[0])
-            self.push(f'<tr><td>{v[1]}</td><td>{var_type}</td><td>{v[2]}</td></tr>')
+            self.push(f'<tr class="d-flex"><td class="col-4">{v[1]}</td><td class="col-2">{var_type}</td><td class="col-6">{v[2]}</td></tr>')
         self.push('</tbody></table></div>')
         self.push('</div></div>')
 

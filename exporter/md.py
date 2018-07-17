@@ -8,6 +8,15 @@ class md(base):
         self.output = output
         self.title = title
 
+    def dump_model(self, model):
+        self.push(f'## {model["classname"]}')
+
+        self.push('| Name | Type | Description |')
+        self.push('| - | - | - |')
+        for v in model['variables']:
+            var_type = self.render_link(v[0])
+            self.push(f'| {v[1]} | {var_type} | {v[2]} |')
+
     def export(self):
         self.referenced = []
         self.printed = []
@@ -16,13 +25,7 @@ class md(base):
 
         for m in self.mongo_objects:
             self.printed.append(m["classname"])
-            self.push(f'## {m["classname"]}')
-
-            self.push('| Name | Type | Description |')
-            self.push('| - | - | - |')
-            for v in m['variables']:
-                var_type = self.render_link(v[0])
-                self.push(f'| {v[1]} | {var_type} | {v[2]} |')
+            self.dump_model(m)
 
         referenced_classes = list(
             map(lambda c: self.class_list[c], self.referenced))
@@ -32,13 +35,7 @@ class md(base):
             m = self.class_list[classname]
 
             self.printed.append(m["classname"])
-            self.push(f'## {m["classname"]}')
-
-            self.push('| Name | Type | Description |')
-            self.push('| - | - | - |')
-            for v in m['variables']:
-                var_type = self.render_link(v[0])
-                self.push(f'| {v[1]} | {var_type} | {v[2]} |')
+            self.dump_model(m)
 
         content = self.flush()
         self.save(content, f'{self.output}/{self.title}.md')

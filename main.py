@@ -40,6 +40,10 @@ if args.html:
     p.to_html(doc_title, output)
     print("html is exported")
 
+if args.sql:
+    p.to_sql(doc_title, output)
+    print("sql is exported")
+
 # mongo_obj = filter(lambda o: o['is_mongo_object'], p.models())
 # for m in mongo_obj:
 #     pprint(m['classname'])
@@ -62,7 +66,7 @@ if args.html:
 #     stmt.create(s, o)
 #     print("sql is exported")
 
-# if not args.md and not args.html and not args.sql:
-#     print("nothing is exported.")
+if not args.md and not args.html and not args.sql:
+    print("nothing is exported.")
 
 print("done.")

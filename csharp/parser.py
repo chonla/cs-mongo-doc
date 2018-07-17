@@ -6,6 +6,7 @@ import operator
 from functools import reduce
 from exporter.md import md
 from exporter.html import html
+from exporter.sql import sql
 
 
 class parser():
@@ -18,7 +19,7 @@ class parser():
     def models(self, files):
         l = list(filter(lambda m: m.ok(), map(lambda f: model(f), files)))
         objs = reduce(operator.concat, list(map(lambda m: m.objects(), l)))
-        objs = list(filter(lambda o: len(o['variables']) > 0, objs))
+        # objs = list(filter(lambda o: len(o['variables']) > 0, objs))
         return objs
 
     def get_scan_list(self, path):
@@ -31,4 +32,8 @@ class parser():
 
     def to_html(self, title, path):
         out = html(title, self.objects, path)
+        out.export()
+
+    def to_sql(self, title, path):
+        out = sql(title, self.objects, path)
         out.export()

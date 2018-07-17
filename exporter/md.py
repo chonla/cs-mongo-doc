@@ -1,5 +1,6 @@
 from exporter.base import base
 import re
+from datetime import datetime
 
 
 class md(base):
@@ -38,6 +39,10 @@ class md(base):
             self.dump_model(m)
 
         content = self.flush()
+
+        ts = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+        content = content + f"\n*generated on {ts}*"
+
         self.save(content, f'{self.output}/{self.title}.md')
 
     def render_link(self, var_type):

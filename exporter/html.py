@@ -1,6 +1,7 @@
 from exporter.base import base
 import re
 import os
+from datetime import datetime
 
 
 class html(base):
@@ -49,7 +50,10 @@ class html(base):
 
         content = self.flush()
 
-        content = self.template.format(title=self.title, content=content)
+        ts = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+
+        content = self.template.format(
+            title=self.title, content=content, timestamp=ts)
 
         self.save(content, f'{self.output}/{self.title}.html')
 

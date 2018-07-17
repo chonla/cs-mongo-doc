@@ -2,6 +2,7 @@ from exporter.base import base
 import re
 from pprint import pprint
 import hashlib
+from datetime import datetime
 
 
 class sql(base):
@@ -93,7 +94,8 @@ COLLATE=utf8_general_ci;'''
         content = self.flush()
 
         hash = hashlib.md5(content.encode('utf-8')).hexdigest()
-        content = content + f"\n-- hash:{hash}"
+        ts = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+        content = content + f"\n-- hash:{hash}\n-- timestamp:{ts}"
 
         self.save(content, f'{self.output}/{self.title}.sql')
 

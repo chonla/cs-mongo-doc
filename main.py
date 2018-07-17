@@ -3,6 +3,8 @@ from export.markdown import markdown
 from export.html import html
 from export.sql import sql
 import argparse
+from csharp.parser import parser as cs
+from pprint import pprint
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--path', help='project path', default='')
@@ -23,27 +25,40 @@ if args.path == "" or args.title == "":
 
 project_path = args.path  # "../246/R246-API/R246-API"
 doc_title = args.title  # "Form246"
-output = args.output
 
-c = code(project_path)
-s, o = c.classes()
+output = args.output
+if output == "":
+    output = '.'
+
+p = cs(project_path)
 
 if args.md:
-    md = markdown(doc_title, output)
-    md.create(s, o)
+    p.to_md(doc_title, output)
     print("markdown is exported")
 
-if args.html:
-    h = html(doc_title, output)
-    h.create(s, o)
-    print("html is exported")
+# mongo_obj = filter(lambda o: o['is_mongo_object'], p.models())
+# for m in mongo_obj:
+#     pprint(m['classname'])
 
-if args.sql:
-    stmt = sql(doc_title, output)
-    stmt.create(s, o)
-    print("sql is exported")
+# c = code(project_path)
+# s, o = c.classes()
 
-if not args.md and not args.html and not args.sql:
-    print("nothing is exported.")
+# if args.md:
+#     md = markdown(doc_title, output)
+#     md.create(s, o)
+#     print("markdown is exported")
+
+# if args.html:
+#     h = html(doc_title, output)
+#     h.create(s, o)
+#     print("html is exported")
+
+# if args.sql:
+#     stmt = sql(doc_title, output)
+#     stmt.create(s, o)
+#     print("sql is exported")
+
+# if not args.md and not args.html and not args.sql:
+#     print("nothing is exported.")
 
 print("done.")

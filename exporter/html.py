@@ -21,8 +21,9 @@ class html(base):
         self.push(f'<h5 class="card-title">{model["classname"]}</h5>')
 
         self.push('<div class="card-text"><table class="table table-striped">')
-        self.push('<thead><tr>')
-        self.push('<th>Name</th><th>Type</th><th>Description</th>')
+        self.push('<thead><tr class="d-flex">')
+        self.push(
+            '<th class="col-4">Name</th><th class="col-2">Type</th><th class="col-6">Description</th>')
         self.push('</tr></thead><tbody>')
         for v in model['variables']:
             var_type = self.render_link(v[0])

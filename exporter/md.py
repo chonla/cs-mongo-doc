@@ -40,7 +40,7 @@ class md(base):
 
         content = self.flush()
 
-        ts = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+        ts = datetime.now().strftime("%A, %d %B %Y %I:%M%p")
         content = content + f"\n*generated on {ts}*"
 
         self.save(content, f'{self.output}/{self.title}.md')

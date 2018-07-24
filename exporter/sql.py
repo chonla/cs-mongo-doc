@@ -94,7 +94,7 @@ COLLATE=utf8_general_ci;'''
         content = self.flush()
 
         hash = hashlib.md5(content.encode('utf-8')).hexdigest()
-        ts = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+        ts = datetime.now().strftime("%A, %d %B %Y %I:%M%p")
         content = content + f"\n-- hash:{hash}\n-- timestamp:{ts}"
 
         self.save(content, f'{self.output}/{self.title}.sql')

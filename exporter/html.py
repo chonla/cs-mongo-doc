@@ -51,7 +51,7 @@ class html(base):
 
         content = self.flush()
 
-        ts = datetime.now().strftime("%A, %d. %B %Y %I:%M%p")
+        ts = datetime.now().strftime("%A, %d %B %Y %I:%M%p")
 
         content = self.template.format(
             title=self.title, content=content, timestamp=ts)

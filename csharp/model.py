@@ -65,7 +65,7 @@ class model():
         return self.success
 
     def readlines(self, file):
-        with open(file) as f:
+        with open(file, encoding="utf8") as f:
             content = f.read()
         content = content.replace("\r\n", "\n")
         lines = list(map(lambda l: l.strip(), content.split("\n")))
